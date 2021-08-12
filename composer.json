@@ -1,0 +1,24 @@
+{
+    "name": "peartonlixiao/helper",
+    "description": "简单基本工具函数集合",
+    "keywords": ["helper", "function", "全局函数"],
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "lxd",
+            "email": "pearton@126.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Peartonlixiao\\Helper\\": "src/"
+        }
+    },
+    "require": {
+        "php": "^7.0",
+        "ext-iconv": "*",
+        "ext-curl": "*",
+        "ext-mbstring": "*"
+    }
+}
