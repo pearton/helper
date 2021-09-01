@@ -1,7 +1,6 @@
 <?php
 /**
  * Helper.php
- * Created on 2021/8/12 17:20
  * Created by Lxd.
  * QQ: 790125098
  */
@@ -31,23 +30,22 @@ class Helper
     /**
      * 编码空格转换回+号
      * Created by Lxd
-     * @param $data
+     * @param $string
      * @return string|string[]
      */
-    public function defineStrReplace($data)
+    public function defineStrReplace(string $string):string
     {
-        return str_replace(' ','+',$data);
+        return str_replace(' ','+',$string);
     }
 
     /**
      * 获取单个汉字拼音首字母
      * 注意:此处不要纠结。汉字拼音是没有以U和V开头的
      * Created by Lxd.
-     * Created on 2021/4/7 9:48
      * @param $str
      * @return int|string|null
      */
-    public function getfirstchar($str)
+    public function getfirstchar(string $str)
     {
         if(empty($str)){return '';}
         if(is_numeric($str{0})) return $str{0};// 如果是数字开头 则返回数字
@@ -86,7 +84,6 @@ class Helper
     /**
      * curl请求
      * Created by Lxd.
-     * Created on 2021/4/7 9:48
      * @param string $url
      * @param string $method
      * @param null $postfields
@@ -147,12 +144,11 @@ class Helper
     /**
      * 提取富文本框文本
      * Created by Lxd.
-     * Created on 2021/4/7 17:42
      * @param $info
      * @param null $length
      * @return string
      */
-    public function richTextTochar($info,$length = null):string
+    public function richTextTochar(string $info,$length = null):string
     {
         $html_string = htmlspecialchars_decode($info);              //把一些预定义的 HTML 实体转换为字符
         $content = str_replace(" ", "", $html_string);              //将空格替换成空
@@ -198,7 +194,6 @@ class Helper
     /**
      * 判断请求来源是否移动端
      * Created by Lxd.
-     * Created on 2021/4/21 17:16
      * @return bool
      */
     public function isMobile():bool
@@ -268,24 +263,23 @@ class Helper
     }
 
     /**
-     * 获取项目内访问来源[目前仅小程序及app]
+     * 获取项目内访问来源[目前web/微信小程序/微信浏览器/其他]
      * Created by Lxd.
-     * Created on 2021/4/21 17:17
-     * @return false|string
+     * @return string
      */
-    public function getUserAgentType()
+    public function getUserAgentType():string
     {
+        $userAgent = 'web';
         if(!$this->isMobile()){
-            return false;
+            return $userAgent;
         }
-        $userAgent = 'app';
-        if (
-            //目前C端:ios/android/小程序 用户agent携带下面三个参数,即判断为通过小程序访问.
-            strpos($_SERVER['HTTP_USER_AGENT'], 'miniprogram') !== false
-            || strpos($_SERVER['HTTP_USER_AGENT'], 'wechatdevtools') !== false
-            || strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger') !== false
-        ) {
+        if(strpos($_SERVER['HTTP_USER_AGENT'], 'miniprogram') !== false){
             $userAgent = 'miniprogram';
+        }elseif (strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger') !== false
+            || strpos($_SERVER['HTTP_USER_AGENT'], 'wechatdevtools') !== false){
+            $userAgent = 'wechatbrowser';
+        }else{
+            $userAgent = 'other';
         }
 
         return $userAgent;
@@ -297,12 +291,13 @@ class Helper
      * Created on 2021/7/6 14:24
      * @return bool
      */
-    public function getIsMiniProgram()
+    public function getIsMiniProgram():bool
     {
         return $this->getUserAgentType() == 'miniprogram';
     }
 
     /**
+     * 计算经纬度排序的sql
      * Created by Lxd.
      * Created on 2021/5/6 11:57
      * @param $lat
@@ -320,6 +315,7 @@ class Helper
      * Created on 2021/5/13 10:11
      * @param int $type
      * @return array
+     * @noinspection DuplicatedCode
      */
     public function getTimeQuantum($type = 1):array
     {
@@ -513,13 +509,12 @@ class Helper
     }
 
     /**
-     * 时间格式化展示[刚刚,10分钟前,1.5小时前...]
+     * 作用方法:时间格式化展示[刚刚,10分钟前,1.5小时前...]
      * Created by Lxd.
-     * Created on 2021/6/5 16:10
      * @param $difference
      * @return string
      */
-    public function timeFormatting($difference)
+    public function timeFormatting($difference):string
     {
         $msg = '很久之前';
         switch ($difference) {
@@ -549,13 +544,12 @@ class Helper
     }
 
     /**
-     * 时间格式化展示[相对↑更加准确描述]
+     * 作用方法:时间格式化展示[相对↑更加准确描述]
      * Created by Lxd.
-     * Created on 2021/6/9 16:09
      * @param $difference
      * @return string
      */
-    public function timeFormattingPrecise($difference)
+    public function timeFormattingPrecise($difference):string
     {
         $msg = '很久之前';
         switch ($difference) {
@@ -588,5 +582,156 @@ class Helper
                 break;
         }
         return $msg;
+    }
+
+    /**
+     * 作用方法:生成随机字符串(数字+字母大小写)
+     * Created by Lxd.
+     * @param int $length
+     * @param string $prefix
+     * @return string
+     */
+    public function getRandomString(int $length = 6,string $prefix = ''):string
+    {
+        $chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZadcdefghijklmnopqrstuvwxyz";
+        $strContent = "";
+        for ( $i = 0; $i < $length; $i++ )
+        {
+            $strContent .= $chars[mt_rand(0,strlen($chars)-1)];
+        }
+        return $prefix.$strContent;
+    }
+
+    /**
+     * 作用方法:随机生成字符串(仅数字)
+     * Created by Lxd.
+     * @param string $prefix
+     * @param bool $length
+     * @return string
+     */
+    public function getRandomFigure(string $prefix = '',$length = false):string
+    {
+        if($length){
+            //适用短信验证码等
+            $string = $prefix.substr(base_convert(md5(uniqid(md5(microtime(true)),true)), 16, 10), 0, $length);
+        }else{
+            //使用订单号等(尽量避重,业务内自己验证)
+            $string = $prefix.date('YmdH',time()).str_pad(mt_rand(10, 999999), 6, "0", STR_PAD_BOTH);
+        }
+        return $string;
+    }
+
+    /**
+     * 作用方法:去除数组中的空值或返回白名单允许的值
+     * Created by Lxd.
+     * @param array $arr
+     * @param array $whiteList
+     * @return array
+     */
+    public function arrayFilterEmpty(array $arr,array $whiteList = []):array
+    {
+        foreach ($arr as $index=>$value){
+            if(empty($value) || !in_array($index,$whiteList)){
+                unset($arr[$index]);
+            }
+        }
+        return $arr;
+    }
+
+    /**
+     * 作用方法:按key清理字段
+     * Created by Lxd.
+     * @param array $arr
+     * @param string $key
+     * @return array
+     */
+    public function unserKeyPerItem(array $arr,string $key):array
+    {
+        if(!empty($arr)){
+            foreach ($arr as &$row){
+                unset($row[$key]);
+            }
+        }
+        return $arr;
+    }
+
+    /**
+     * 作用方法: 处理无限级分类，返回带有层级关系的树形结构
+     * Created by Lxd.
+     * 处理无限级分类，返回带有层级关系的树形结构
+     * @param array $data 数据数组
+     * @param int $root 根节点的父级id
+     * @param string $id id字段名
+     * @param string $pid 父级id字段名
+     * @param string $child 树形结构子级字段名
+     * @return array $tree 树形结构数组
+     */
+    public static function getMultilevelTree(array $data, $root = 0, $id = 'id', $pid = 'pid', $child = 'child'):array
+    {
+        $tree = [];
+        $temp = [];
+
+        foreach ($data as $key => $val) {
+            $temp[$val[$id]] = &$data[$key];
+        }
+        foreach ($data as $key => $val) {
+            $parentId = $val[$pid];
+            if ($root == $parentId) {
+                $tree[] = &$data[$key];
+            } else {
+                if (isset($temp[$parentId])) {
+                    $parent = &$temp[$parentId];
+                    $parent[$child][] = &$data[$key];
+                }
+            }
+        }
+        return $tree;
+    }
+
+    /**
+     * 作用方法:插入数据到数组指定位置.
+     * Created by Lxd.
+     * @param integer $offset
+     * @param array $data
+     * @param array $insertData
+     * @return array
+     */
+    public static function insertDataToArray(int $offset, array $data, array $insertData):array
+    {
+        $prevData = array_slice($data, 0, $offset);
+        $lastData = array_slice($data, $offset);
+        $prevData = array_merge($prevData, $insertData);
+        return array_merge($prevData, $lastData);
+    }
+
+    /**
+     * 作用方法:取得两个数组中值的比较情况
+     * Created by Lxd.
+     * @param array $newIds
+     * @param array $oldIds
+     * @return array
+     */
+    public static function updateArrayDiff(array $newIds, array $oldIds):array
+    {
+        $addIds = array_diff($newIds, $oldIds);      // 删除的id
+        $deleteIds = array_diff($oldIds, $newIds);         // 新增的id
+        $sameIds = array_intersect($newIds, $oldIds);   // 不变的id
+
+        return ['delete' => $deleteIds, 'add' => $addIds, 'same' => $sameIds];
+    }
+
+    /*
+     * 作用方法:检测是否是url
+     * Created by Lxd.
+     * @param string $url
+     * @return bool
+     */
+    public static function checkUrl ($url):bool
+    {
+        $pattern = "/^http(s?):\/\/(?:[A-za-z0-9-]+\.)+[A-za-z]{2,4}(?:[\/\?#][\/=\?%\-&~`@[\]\':+!\.#\w]*)?$/";
+        if (!preg_match($pattern, $url)){
+            return false;
+        }
+        return true;
     }
 }
