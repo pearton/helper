@@ -19,6 +19,7 @@
         "php": "^7.0",
         "ext-iconv": "*",
         "ext-curl": "*",
-        "ext-mbstring": "*"
+        "ext-mbstring": "*",
+      "ext-gd": "*"
     }
 }

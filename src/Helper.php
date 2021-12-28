@@ -162,6 +162,48 @@ class Helper
     }
 
     /**
+     * 作用方法:时间字符串
+     * Created by Lxd.
+     * @return string
+     */
+    function getDateTime():string
+    {
+        return date('Y-m-d H:i:s');
+    }
+
+    /**
+     * Limit the number of characters in a string.
+     *
+     * Created by test.
+     * Created on 2021/4/16 15:22
+     * @param $value
+     * @param int $limit
+     * @param string $end
+     * @return string
+     */
+    function str_limit($value, $limit = 100, $end = '...'):string
+    {
+        if(!$value){
+            return '';
+        }
+        return \Illuminate\Support\Str::limit($value, $limit, $end);
+    }
+
+    /**
+     * 隐藏手机号中间4位
+     * @param $phone
+     * @return string|string[]|null
+     */
+    function hidMobile($phone){
+        $IsWhat = preg_match('/(0[0-9]{2,3}[\-]?[2-9][0-9]{6,7}[\-]?[0-9]?)/i',$phone); //固定电话
+        if($IsWhat == 1){
+            return preg_replace('/(0[0-9]{2,3}[\-]?[2-9])[0-9]{3,4}([0-9]{3}[\-]?[0-9]?)/i','$1****$2',$phone);
+        }else{
+            return  preg_replace('/(1[358]{1}[0-9])[0-9]{4}([0-9]{4})/i','$1****$2',$phone);
+        }
+    }
+
+    /**
      * .结构获取数组内元素
      * Created by Lxd.
      * @param array $array
@@ -533,10 +575,13 @@ class Helper
                 $msg = floor($difference / 86400) . '天前';
                 break;
 
-            case $difference > '2592000' && $difference <= '7776000':
+            case $difference > '2592000' && $difference <= '31104000':
                 $msg = floor($difference / 2592000) . '个月前';
                 break;
-            case $difference > '7776000':
+            case $difference > '31104000' && $difference <= '155520000':    //5年
+                $msg = floor($difference / 31104000) . '年前';
+                break;
+            case $difference > '155520000';
                 $msg = '很久以前';
                 break;
         }
@@ -577,8 +622,17 @@ class Helper
                     $msg .= number_format($difference%2592000/86400) . '天';
                 }
                 break;
-            case $difference > '31104000':
-                $msg = '一年前';
+            case $difference > '31104000' && $difference <= '62208000':
+                $msg = '一年多前';
+                break;
+            case $difference > '62208000' && $difference <= '93312000':
+                $msg = '两年多前';
+                break;
+            case $difference > '62208000' && $difference <= '124416000':
+                $msg = '三年多前';
+                break;
+            case $difference > '124416000':
+                $msg = '很久以前';
                 break;
         }
         return $msg;
