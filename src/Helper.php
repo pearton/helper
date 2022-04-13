@@ -788,4 +788,26 @@ class Helper
         }
         return true;
     }
+
+    /**
+     * 作用方法:字符串隐藏(后数第五位开始 隐藏4位)
+     * Created by Lxd.
+     * @param string $str
+     * @return string|string[]
+     */
+    function hidStr(string $str){
+        if(!$str){
+            return '';
+        }
+        $len = strlen($str);
+        if($len <= 5){
+            return '****';
+        }
+        if(strlen($str) <= 9){
+            $start = (int)(($len-4)/2);
+            return substr_replace($str,'****',$start,4);
+        }
+        $start = $len-8;
+        return substr_replace($str,'****',$start,4);
+    }
 }
