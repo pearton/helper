@@ -789,6 +789,91 @@ class Helper
         return true;
     }
 
+    /*
+     * 获取指定目录下指定文件后缀的函数
+     * @$path   文件路径
+     * @$ext    文件后缀名，默认为false为不指定，如果指定，请以数组方式传入
+     * @$filename   使用时请提前赋值为空数组
+     * @$recursive  是否递归查找，默认为false
+     * @$baseurl    是否包含路径，默认包含
+     * @$getDetail  是否获取文件详细信息（大小等）
+     */
+    public static function getDirFilesLists($path,&$filename,$recursive = false,$ext = false,$baseurl = true,$getDetail = false)
+    {
+        if (!$path) {
+            die('请传入目录路径');
+        }
+        $resource = opendir($path);
+        if (!$resource) {
+            die('你传入的目录不正确');
+        }
+        //遍历目录
+        while ($rows = readdir($resource)) {
+            //如果指定为递归查询
+            if ($recursive) {
+                if (is_dir($path . '/' . $rows) && $rows != "." && $rows != "..") {
+                    getDirFilesLists($path . '/' . $rows, $filename, $resource, $ext, $baseurl);
+                } elseif ($rows != "." && $rows != "..") {
+                    //如果指定后缀名
+                    if ($ext) {
+                        //必须为数组
+                        if (!is_array($ext)) {
+                            die('后缀名请以数组方式传入');
+                        }
+                        //转换小写
+                        foreach ($ext as &$v) {
+                            $v = strtolower($v);
+                        }
+                        //匹配后缀
+                        $file_ext = strtolower(pathinfo($rows)['extension']);
+                        if (in_array($file_ext, $ext)) {
+                            //是否包含路径
+                            if ($baseurl) {
+                                $filename[] = $path . '/' . $rows;
+                            } else {
+                                $filename[] = $rows;
+                            }
+                        }
+                    } else {
+                        if ($baseurl) {
+                            $filename[] = $path . '/' . $rows;
+                        } else {
+                            $filename[] = $rows;
+                        }
+                    }
+                }
+            } else {
+                //非递归查询
+                if (is_file($path . '/' . $rows) && $rows != "." && $rows != "..") {
+                    if ($baseurl) {
+                        $filename[] = $path . '/' . $rows;
+                    } else {
+                        $filename[] = $rows;
+                    }
+                }
+            }
+        }
+        if($getDetail){
+            foreach ($filename as &$v){
+                $fileUri = $v;
+                $v = [];
+                $v['file_uri'] = $fileUri;
+                //打开文件，r表示以只读方式打开
+                $handle = fopen($v['file_uri'],"r");
+                //获取文件的统计信息
+                $fstat = fstat($handle);
+
+                $v['file_name'] = basename($v['file_uri']);
+                //文件大小 KB
+                $v['file_size'] = round($fstat["size"]/1024,2);
+                //最后访问时间
+                $v['file_atime'] = date("Y-m-d h:i:s",$fstat["atime"]);
+                //最后修改时间
+                $v['file_mtime'] = date("Y-m-d h:i:s",$fstat["mtime"]);
+            }
+        }
+    }
+
     /**
      * 作用方法:字符串隐藏(后数第五位开始 隐藏4位)
      * Created by Lxd.
