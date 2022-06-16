@@ -774,6 +774,21 @@ class Helper
         return ['delete' => $deleteIds, 'add' => $addIds, 'same' => $sameIds];
     }
 
+    /**
+     * 作用方法:二维数组查找
+     * @Author Pearton <pearton@126.com>
+     * @Time 2022/6/16 15:42
+     * @param array $array
+     * @param string $findField
+     * @param string $findValue
+     * @return false|int|string
+     */
+    public static function twoArraySearch(array $array,string $findField,string $findValue)
+    {
+        $valuePluck = array_column($array,$findField);
+        return array_search($findValue,$valuePluck);
+    }
+
     /*
      * 作用方法:检测是否是url
      * Created by Lxd.
