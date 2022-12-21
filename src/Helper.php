@@ -822,6 +822,7 @@ class Helper
         if (!$resource) {
             die('你传入的目录不正确');
         }
+        $filename = [];
         //遍历目录
         while ($rows = readdir($resource)) {
             //如果指定为递归查询
