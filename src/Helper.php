@@ -365,7 +365,7 @@ class Helper
         switch ($type){
             case 1: //今天
                 $date1 = date('Y-m-d H:i:s',strtotime(date('Y-m-d')));
-                $date2 = date('Y-m-d H:i:s',strtotime('+1 day'));
+                $date2 = date('Y-m-d',time()).' 23:59:59';
                 break;
             case 2: //本周
                 $date1 = date("Y-m-d H:i:s",mktime(0, 0 , 0,date("m", $time),date("d", $time)-date("w", $time)+1,date("Y", $time)));
