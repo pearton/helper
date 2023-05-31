@@ -393,7 +393,7 @@ class Helper
                 $date1 = date('Y-m-d H:i:s', mktime(0, 0, 0,$season*3-3+1,1,date('Y')));
                 $date2 = date('Y-m-d H:i:s', mktime(23,59,59,$season*3,date('t',mktime(0, 0 , 0,$season*3,1,date("Y"))),date('Y')));
                 break;
-            default: //年单位操作
+            default: //年单位操作(传递入参数决定)
                 $date1 = date("Y-01-01 00:00:00", strtotime("$type year"));
                 $date2 = date('Y-12-31 23:59:59', strtotime("$type year"));
         }
