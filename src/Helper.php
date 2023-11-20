@@ -48,13 +48,13 @@ class Helper
     public function getfirstchar(string $str)
     {
         if(empty($str)){return '';}
-        if(is_numeric($str{0})) return $str{0};// 如果是数字开头 则返回数字
-        $fchar=ord($str{0});
-        if($fchar>=ord('A')&&$fchar<=ord('z')) return strtoupper($str{0}); //如果是字母则返回字母的大写
+        if(is_numeric($str[0])) return $str[0];// 如果是数字开头 则返回数字
+        $fchar=ord($str[0]);
+        if($fchar>=ord('A')&&$fchar<=ord('z')) return strtoupper($str[0]); //如果是字母则返回字母的大写
         $s1=iconv('UTF-8','gb2312',$str);
         $s2=iconv('gb2312','UTF-8',$s1);
         $s=$s2==$str?$s1:$str;
-        $asc=ord($s{0})*256+ord($s{1})-65536;
+        $asc=ord($s[0])*256+ord($s[1])-65536;
         if($asc>=-20319&&$asc<=-20284) return 'A';//这些都是汉字
         if($asc>=-20283&&$asc<=-19776) return 'B';
         if($asc>=-19775&&$asc<=-19219) return 'C';
